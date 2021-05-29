@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 class PCF8591:
     def __init__(self, bus):
@@ -23,4 +24,4 @@ class PCF8591:
         self.i2cbus.read_byte(i2caddress)
         ain3 = self.i2cbus.read_byte(i2caddress)
 
-        return { "illumination": lux, "temperature": tempture, "time": time.time() }
+        return { "illumination": lux, "temperature": tempture, "time": datetime.utcnow() }
