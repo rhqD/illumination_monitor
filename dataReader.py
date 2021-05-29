@@ -17,4 +17,10 @@ class DataReader:
             self.connect()
             self.getAllData()
 
+    def insertData(self, data):
+        try:
+            return self.pcf8591Log.insert_one(data)
+        except TimeoutError:
+            self.connect()
+            self.insertData(data)
         
