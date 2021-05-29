@@ -16,4 +16,4 @@ def home():
     return Response(json.dumps({'data': result}, default=json_util.default),
                 mimetype='application/json')
 
-app.run()
+app.run(port=5000, host="0.0.0.0")
