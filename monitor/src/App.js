@@ -43,17 +43,18 @@ function App() {
   const myCharts = useRef();
   useEffect(() => {
     myCharts.current = echarts.init(containerRef.current);
-    fetch('http://192.168.0.107:5000/data').then(resp => resp.json()).then(({ data }) => {
+    fetch('/data').then(resp => resp.json()).then(({ data }) => {
       baseOption.series[0].data = data.map(it => {
         const time = new Date(it.time);
         return {
-            name: time.toString(),
-            value: [
-                time,
-                0 - it.value
-            ]
+          name: time.toString(),
+          value: [
+              time,
+              0 - it.value
+          ]
         };
-    });
+      });
+      myCharts.current.setOption(baseOption);
     });
   });
   return (

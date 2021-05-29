@@ -1,6 +1,7 @@
 from pcf8951 import PCF8591
+from werkzeug.utils import send_file
 from dataReader import DataReader
-from flask import Flask, json, Response
+from flask import Flask, json, Response, send_from_directory
 from bson import json_util
 from config import connectionStr
 import atexit
@@ -8,7 +9,7 @@ from smbus import SMBus
 from flask_cors import CORS, cross_origin
 from apscheduler.schedulers.background import BackgroundScheduler
 
-app = Flask("illumination monitor")
+app = Flask("illumination monitor", static_folder='monitor/build')
 CORS(app, support_credentials=True)
 app.config["DEBUG"] = False
 
@@ -34,5 +35,23 @@ def home():
         result.append({ "time": doc["time"].isoformat(), "value": doc["illumination"] })
     return Response(json.dumps({'data': result}, default=json_util.default),
                 mimetype='application/json')
+
+@app.route('/monitor/<path:path>')
+def serve_monitor(path):
+    return send_from_directory("monitor/build", path)
+
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory("monitor/build/static", path)
+
+@app.route('/<path:filename>')
+def serve_root(filename):
+    return send_from_directory("monitor/build", filename)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    print("fuck")
+    return app.send_static_file("index.html"), 200
+
 
 app.run(port=5000, host="0.0.0.0")
