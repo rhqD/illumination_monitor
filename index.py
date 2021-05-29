@@ -5,10 +5,11 @@ from bson import json_util
 from config import connectionStr
 import atexit
 from smbus import SMBus
-
+from flask_cors import CORS, cross_origin
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask("illumination monitor")
+CORS(app, support_credentials=True)
 app.config["DEBUG"] = False
 
 dataReader = DataReader(connectionStr)
@@ -26,6 +27,7 @@ scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
 @app.route('/data', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def home():
     result = []
     for doc in dataReader.getAllData():
