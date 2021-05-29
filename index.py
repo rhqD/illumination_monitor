@@ -32,13 +32,13 @@ atexit.register(lambda: scheduler.shutdown())
 def home():
     result = []
     for doc in dataReader.getAllData():
-        result.append({ "time": doc["time"].isoformat(), "value": doc["illumination"] })
+        result.append({ "time": doc["time"].isoformat() + "z", "value": doc["illumination"] })
     return Response(json.dumps({'data': result}, default=json_util.default),
                 mimetype='application/json')
 
 @app.route('/monitor/<path:path>')
 def serve_monitor(path):
-    return send_from_directory("monitor/build", path)
+    return send_from_directory("monitor/build", path)   
 
 @app.route('/static/<path:path>')
 def serve_static(path):
